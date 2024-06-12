@@ -7,6 +7,7 @@ import {
 	TextInput,
 	Platform,
 	TouchableOpacity,
+	Alert,
 } from 'react-native';
 import { Image } from 'expo-image';
 import { Datepicker as RNKDatepicker } from '@ui-kitten/components';
@@ -16,23 +17,11 @@ import { Color, FontSize, Border, FontFamily } from '../GlobalStyles';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
 const ThemLichTron = () => {
-	// const [calendarTickDatePicker, setCalendarTickDatePicker] = useState<
-	// 	Date | undefined
-	// >(undefined);
 	const navigation = useNavigation<StackNavigationProp<ParamListBase>>();
-
-	// const formatDate = (date) => {
-	// 	const formattedDate = new Date(date);
-	// 	const day = formattedDate.getDate();
-	// 	const month = formattedDate.getMonth() + 1;
-	// 	const year = formattedDate.getFullYear();
-
-	// 	return `${day}/${month}/${year}`;
-	// };
-
-	const [date, setDate] = useState(new Date(2024, 5, 8)); // June 8, 2024
+	const [date, setDate] = useState(new Date(2024, 5, 12)); // June 8, 2024
 	const [show, setShow] = useState(false);
 	const [showTimePicker, setShowTimePicker] = useState(false);
+	const [input, setInput] = useState('');
 
 	const onChange = (event, selectedDate) => {
 		const currentDate = selectedDate || date;
@@ -46,6 +35,11 @@ const ThemLichTron = () => {
 			currentDate.setHours(selectedTime.getHours());
 			currentDate.setMinutes(selectedTime.getMinutes());
 			setDate(new Date(currentDate));
+			setInput(
+				`${currentDate.getHours()}:${
+					currentDate.getMinutes() < 10 ? '0' : ''
+				}${currentDate.getMinutes()}`
+			);
 		}
 		if (Platform.OS === 'android') {
 			setShowTimePicker(false);
@@ -57,13 +51,53 @@ const ThemLichTron = () => {
 	const showMode = () => {
 		setShow(true);
 	};
+	const handleSave = () => {
+		// Print all input values
+		console.log('Input 1:');
+		// Print more inputs if you have more...
+		// Define the body of the request
+		const bodyObj = {
+			'next-cycle': 1,
+			mixer1: 2,
+			mixer2: 2,
+			mixer3: 2,
+			selector1: 2,
+			selector2: 2,
+			selector3: 2,
+			'pump-in': 2,
+			'pump-out': 2,
+			'time-start': input,
+			active: 1,
+		};
+		const body = {
+			value: JSON.stringify(bodyObj),
+		};
+
+		// Make the POST request
+		fetch('http://io.adafruit.com/api/v2/dinhvan2211/feeds/selector/data', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				'X-AIO-Key': 'aio_qLvx85E4VdqhDFLuJ3PtzppGTWHn',
+			},
+			body: JSON.stringify(body),
+		})
+			.then((response) => response.json())
+			.then((data) => {
+				console.log('Success:', data);
+				Alert.alert('Success', 'Your operation was successful!', [
+					{ text: 'OK', onPress: () => console.log('OK Pressed') },
+				]);
+			})
+			.catch((error) => {
+				console.error('Error:', error);
+			});
+	};
+
 	return (
 		<View style={[styles.themLichTron, styles.statusBarBg]}>
 			<View style={styles.addscheduler}>
-				<Pressable
-					style={styles.buttonOn}
-					onPress={() => navigation.navigate('MnHnhChnhApp')}
-				>
+				<Pressable style={styles.buttonOn} onPress={handleSave}>
 					<Text style={[styles.luLi, styles.luLiTypo]}>LƯU LẠI</Text>
 				</Pressable>
 				<View style={[styles.edittime, styles.edittimeShadowBox]}>

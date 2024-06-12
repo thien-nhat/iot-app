@@ -12,6 +12,60 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { useNavigation, ParamListBase } from '@react-navigation/native';
 import { Border, FontSize, FontFamily, Color } from '../GlobalStyles';
 import { transform } from 'typescript';
+import { Client, Message } from 'react-native-paho-mqtt';
+
+// Set up an in-memory alternative to global localStorage
+const myStorage = {
+	setItem: (key, item) => {
+		myStorage[key] = item;
+	},
+	getItem: (key) => myStorage[key],
+	removeItem: (key) => {
+		delete myStorage[key];
+	},
+};
+
+// Create a client instance
+const client = new Client({
+	uri: 'wss://io.adafruit.com:443/mqtt/',
+	clientId: 'dinhvan2211',
+	storage: myStorage,
+});
+
+// Set event handlers
+client.on('connectionLost', (responseObject) => {
+	if (responseObject.errorCode !== 0) {
+		console.log(responseObject.errorMessage);
+	}
+});
+
+const ADAFRUIT_AIO_USERNAME = 'dinhvan2211';
+const ADAFRUIT_AIO_KEY = 'aio_qLvx85E4VdqhDFLuJ3PtzppGTWHn';
+
+client
+	.connect({
+		useSSL: true,
+		userName: ADAFRUIT_AIO_USERNAME,
+		password: ADAFRUIT_AIO_KEY,
+	})
+	.then(() => {
+		console.log('Connected to Adafruit IO');
+		return client.subscribe('dinhvan2211/feeds/assignment.temperature');
+	})
+	.then(() => {
+		// Subscribe to the Humidity feed
+		return client.subscribe('dinhvan2211/feeds/assignment.humidity');
+	})
+	// .then(() => {
+	// 	const message = new Message('21');
+	// 	message.destinationName = 'dinhvan2211/feeds/Temperature';
+	// 	client.send(message);
+	// })
+	.catch((responseObject) => {
+		if (responseObject.errorCode !== 0) {
+			console.log('onConnectionLost:' + responseObject);
+		}
+	});
 
 const MnHnhChnhApp = () => {
 	const [switchSchedulerSwitchValueState, setSwitchSchedulerSwitchValueState] =
@@ -22,6 +76,18 @@ const MnHnhChnhApp = () => {
 	] = useState(false);
 	const [dSwitchSwitchValueState, setDSwitchSwitchValueState] = useState(false);
 	const navigation = useNavigation<StackNavigationProp<ParamListBase>>();
+
+	const [temperature, setTemperature] = useState('35');
+	const [humidity, setHumidity] = useState('50');
+
+	client.on('messageReceived', (message) => {
+		console.log('Message arrived: ' + message.payloadString);
+		if (message.destinationName === 'dinhvan2211/feeds/assignment.temperature') {
+			setTemperature(message.payloadString);
+		} else if (message.destinationName === 'dinhvan2211/feeds/assignment.humidity') {
+			setHumidity(message.payloadString);
+		}
+	});
 
 	return (
 		<View style={styles.mnHnhChnhApp}>
@@ -81,7 +147,7 @@ const MnHnhChnhApp = () => {
 					/>
 					<Text style={[styles.bnPhn1, styles.text2Typo]}>Bón phân 1</Text>
 					<Text style={[styles.text2, styles.text2Typo]}>
-						12:22, 08/06/2024
+						12:24, 18/06/2024
 					</Text>
 				</Pressable>
 				<Pressable
@@ -107,8 +173,8 @@ const MnHnhChnhApp = () => {
 						onValueChange={setSwitchScheduler1SwitchValueState}
 						thumbColor='#fff'
 					/>
-					<Text style={[styles.bnPhn11, styles.phnTypo]}>Bón phân 1</Text>
-					<Text style={[styles.text5, styles.phnTypo]}>12:22, 08/06/2024</Text>
+					<Text style={[styles.bnPhn11, styles.phnTypo]}>Bón phân 2</Text>
+					<Text style={[styles.text5, styles.phnTypo]}>12:26, 18/06/2024</Text>
 				</Pressable>
 				<Pressable
 					style={styles.lchShadowBox}
@@ -127,8 +193,8 @@ const MnHnhChnhApp = () => {
 						contentFit='cover'
 						source={require('../assets/line-2.png')}
 					/>
-					<Text style={[styles.bnPhn12, styles.phnTypo]}>Bón phân 1</Text>
-					<Text style={[styles.text5, styles.phnTypo]}>12:22, 08/06/2024</Text>
+					<Text style={[styles.bnPhn12, styles.phnTypo]}>Bón phân 3</Text>
+					<Text style={[styles.text5, styles.phnTypo]}>12:28, 18/06/2024</Text>
 					<Switch
 						style={styles.switchScheduler}
 						value={dSwitchSwitchValueState}
@@ -140,7 +206,7 @@ const MnHnhChnhApp = () => {
 			<View style={[styles.showSensor, styles.realtimeBg]}>
 				<View style={[styles.showHumidity, styles.showShadowBox]}>
 					<View style={styles.humidity}>
-						<Text style={[styles.text9, styles.cTypo]}> 50%</Text>
+						<Text style={[styles.text9, styles.cTypo]}> {humidity}%</Text>
 						<Image
 							style={[styles.vuesaxbulkdropIcon, styles.iconPosition]}
 							contentFit='cover'
@@ -150,7 +216,7 @@ const MnHnhChnhApp = () => {
 				</View>
 				<View style={[styles.showTempe, styles.temperaPosition]}>
 					<View style={[styles.tempera, styles.temperaPosition]}>
-						<Text style={[styles.c, styles.cTypo]}>35ºC</Text>
+						<Text style={[styles.c, styles.cTypo]}>{temperature}ºC</Text>
 						<Image
 							style={[styles.cloudIcon, styles.iconPosition]}
 							contentFit='cover'
@@ -160,7 +226,7 @@ const MnHnhChnhApp = () => {
 				</View>
 			</View>
 			<View style={[styles.realtime, styles.realtimeBg]}>
-				<Text style={[styles.time, styles.cTypo]}>22:50, 08/06/2024</Text>
+				<Text style={[styles.time, styles.cTypo]}>22:50, 12/06/2024</Text>
 				<View style={[styles.tempeOver, styles.tempeOverPosition]}>
 					<Image
 						style={[styles.cloudIcon1, styles.lchTrnPosition1]}
@@ -201,7 +267,6 @@ const styles = StyleSheet.create({
 		paddingVertical: 18,
 		alignItems: 'flex-end',
 		justifyContent: 'flex-start',
-
 	},
 	lchTrnPosition: {
 		borderTopRightRadius: Border.br_11xl,
@@ -429,8 +494,8 @@ const styles = StyleSheet.create({
 		flex: 1,
 		borderTopRightRadius: Border.br_11xl,
 		borderTopLeftRadius: Border.br_11xl,
-    left: '50%',
-    transform: [{translateX: -187.5}],
+		left: '50%',
+		transform: [{ translateX: -187.5 }],
 	},
 	text9: {
 		top: 5,
@@ -554,11 +619,11 @@ const styles = StyleSheet.create({
 		overflow: 'hidden',
 	},
 	icon2: {
-		maxHeight: '100%',
+		height: '100%',
 		width: '100%',
 	},
 	setting2: {
-		right: 5,
+		right: 15,
 		bottom: 12,
 		width: 38,
 		top: 10,

@@ -54,7 +54,7 @@ const LchSToLchTrn = () => {
               12:22, 08/06/2024
             </Text>
             <Text style={[styles.text3, styles.text3Typo]}>
-              14:22, 08/06/2024
+              12:32, 08/06/2024
             </Text>
           </View>
           <View style={styles.lchShadowBox}>
@@ -67,7 +67,7 @@ const LchSToLchTrn = () => {
                 <Text style={styles.tnLchTrn}>{` `}</Text>
               </Text>
             </Text>
-            <Text style={[styles.bnPhn1, styles.textPosition]}>Bón phân 1</Text>
+            <Text style={[styles.bnPhn1, styles.textPosition]}>Bón phân 2</Text>
             <Text
               style={[styles.thiGianBt, styles.lchTypo]}
             >{`Thời gian bắt đầu:  `}</Text>
@@ -85,10 +85,10 @@ const LchSToLchTrn = () => {
               source={require("../assets/line-3.png")}
             />
             <Text style={[styles.text2, styles.textPosition]}>
-              12:22, 08/06/2024
+              12:32, 08/06/2024
             </Text>
             <Text style={[styles.text3, styles.text3Typo]}>
-              14:22, 08/06/2024
+              12:42, 08/06/2024
             </Text>
           </View>
           <View style={styles.lchShadowBox}>
@@ -101,7 +101,7 @@ const LchSToLchTrn = () => {
                 <Text style={styles.tnLchTrn}>{` `}</Text>
               </Text>
             </Text>
-            <Text style={[styles.bnPhn1, styles.textPosition]}>Bón phân 1</Text>
+            <Text style={[styles.bnPhn1, styles.textPosition]}>Bón phân 3</Text>
             <Text
               style={[styles.thiGianBt, styles.lchTypo]}
             >{`Thời gian bắt đầu:  `}</Text>
@@ -119,10 +119,10 @@ const LchSToLchTrn = () => {
               source={require("../assets/line-3.png")}
             />
             <Text style={[styles.text2, styles.textPosition]}>
-              12:22, 08/06/2024
+              14:22, 08/06/2024
             </Text>
             <Text style={[styles.text3, styles.text3Typo]}>
-              14:22, 08/06/2024
+              14:32, 08/06/2024
             </Text>
           </View>
           <View style={styles.lchShadowBox}>
@@ -135,7 +135,7 @@ const LchSToLchTrn = () => {
                 <Text style={styles.tnLchTrn}>{` `}</Text>
               </Text>
             </Text>
-            <Text style={[styles.bnPhn1, styles.textPosition]}>Bón phân 1</Text>
+            <Text style={[styles.bnPhn1, styles.textPosition]}>Bón phân 4</Text>
             <Text
               style={[styles.thiGianBt, styles.lchTypo]}
             >{`Thời gian bắt đầu:  `}</Text>
@@ -153,10 +153,10 @@ const LchSToLchTrn = () => {
               source={require("../assets/line-3.png")}
             />
             <Text style={[styles.text2, styles.textPosition]}>
-              12:22, 08/06/2024
+              15:11, 08/06/2024
             </Text>
             <Text style={[styles.text3, styles.text3Typo]}>
-              14:22, 08/06/2024
+              15:21, 08/06/2024
             </Text>
           </View>
         </ScrollView>
